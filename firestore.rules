@@ -1,0 +1,20 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+    function isStaff() { return signedIn() && exists(/databases/$(database)/documents/roles/$(request.auth.uid)); }
+    function isAdmin() { return isStaff() && get(/databases/$(database)/documents/roles/$(request.auth.uid)).data.role == 'admin'; }
+
+    match /roles/{uid} {
+      allow read: if signedIn() && request.auth.uid == uid;
+      allow write: if false; // শুধু Firebase Console থেকে
+    }
+    match /players/{id} {
+      allow read: if signedIn();
+      allow create, update: if isStaff();
+      allow delete: if isAdmin();
+    }
+    match /matches/{id} { allow read: if signedIn(); allow write: if isStaff(); }
+    match /news/{id}    { allow read: if signedIn(); allow write: if isStaff(); }
+  }
+}
