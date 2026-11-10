@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login & Signup Form</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px 14px;background:#e5e5e5;color:#35383b;font-family:Outfit,Arial,sans-serif}
+.page{width:min(100%,520px);text-align:center}
+h1{font-family:Georgia,serif;font-style:italic;font-size:clamp(27px,6vw,42px);color:#111;margin:0 0 48px;text-shadow:1px 2px 2px #bbb}
+.circle{width:min(100%,470px);height:min(calc(100vw - 28px),470px);aspect-ratio:1/1;flex:0 0 auto;margin:0 auto;display:flex;align-items:center;justify-content:center;border-radius:50%;background:#e5e5e5;box-shadow:inset 12px 12px 24px #c9c9c9,inset -12px -12px 24px #fff,18px 18px 35px #d0d0d0,-18px -18px 35px #f5f5f5;padding:30px;transition:transform .7s cubic-bezier(.2,.75,.25,1);}
+.circle.is-flipped{transform:rotate(360deg)}
+.form{transition:none;transform:none;opacity:1;visibility:visible;backface-visibility:visible}
+.form{width:min(100%,305px)}
+h2{font-size:clamp(30px,7vw,42px);margin:0;font-weight:700;color:#3c4043}
+.sub{margin:8px 0 28px;color:#777;font-size:14px}
+.fields{display:grid;gap:18px}
+.field{display:flex;align-items:center;gap:12px;border-radius:13px;padding:13px 16px;background:#e5e5e5;box-shadow:inset 5px 5px 9px #cfcfcf,inset -5px -5px 9px #fff}
+.field svg{width:17px;height:17px;fill:#777;flex-shrink:0}
+input{border:0;outline:0;background:transparent;width:100%;font:16px Outfit,Arial;color:#444}
+input::placeholder{color:#888}
+button{border:0;cursor:pointer;font-family:inherit}
+.submit{margin-top:28px;width:100%;padding:14px;border-radius:13px;background:#e5e5e5;box-shadow:6px 6px 12px #c9c9c9,-6px -6px 12px #fff;color:#555;font-weight:700;font-size:15px;letter-spacing:.5px}
+.submit:active{box-shadow:inset 4px 4px 8px #c9c9c9,inset -4px -4px 8px #fff}
+.switch{font-size:13px;color:#777;margin:22px 0 0}
+.switch button{background:none;color:#7b3038;font-weight:700;font-size:14px;padding:0}
+.message{min-height:20px;margin:12px 0 0;font-size:13px;color:#4b7650}
+@media(max-width:380px){.circle{width:calc(100vw - 28px);height:calc(100vw - 28px);padding:20px}.form{max-width:270px}h1{margin-bottom:35px}}
+
+/* Decorative 3D football/player/card icons around the round login form */
+.circle{position:relative;isolation:isolate}
+.orbit-icons{position:absolute;inset:0;pointer-events:none;z-index:0}
+.orbit-icons .decor{position:absolute;filter:drop-shadow(3px 5px 3px rgba(0,0,0,.28));}
+.orbit-icons .ball{width:58px;height:58px;top:8%;right:8%;transform:rotate(-16deg)}
+.orbit-icons .person{width:52px;height:62px;left:5%;top:43%;transform:rotate(-7deg)}
+.orbit-icons .yellow-card{width:28px;height:42px;right:8%;bottom:18%;transform:rotate(13deg)}
+.orbit-icons .red-card{width:28px;height:42px;left:13%;bottom:12%;transform:rotate(-12deg)}
+.form{position:relative;z-index:1}
+@media(max-width:380px){
+ .orbit-icons .ball{width:44px;height:44px;top:7%;right:7%}
+ .orbit-icons .person{width:40px;height:48px;left:4%;top:44%}
+ .orbit-icons .yellow-card{width:22px;height:34px;right:7%;bottom:16%}
+ .orbit-icons .red-card{width:22px;height:34px;left:10%;bottom:10%}
+}
+
+
+.portal{display:none;width:min(100%,900px);margin:0 auto;text-align:left;color:#173b2c}
+.portal.show{display:block}
+.welcome-hero{background:linear-gradient(135deg,#0e4d3a,#09291f);color:#fff;border-radius:20px;padding:26px;box-shadow:0 14px 30px #0002}
+.welcome-hero h2{color:#f2b705;font-size:clamp(28px,6vw,44px);margin:0 0 10px}
+.portal-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px;margin-top:16px}
+.portal-card{background:#f5f7f4;border-radius:16px;padding:18px;box-shadow:8px 8px 18px #d0d4cf,-7px -7px 18px #fff}
+.portal-card h3{margin:0 0 12px;color:#0e4d3a}
+.portal-btn{padding:11px 16px;border-radius:10px;background:#f2b705;color:#14201b;font-weight:700;margin-top:10px}
+.captain-photo{width:110px;height:110px;border-radius:50%;object-fit:cover;background:#dce4dd;border:4px solid #f2b705;display:block;margin:0 auto 10px}
+.portal input{margin:6px 0}
+.member-list{padding-left:20px}
+#applyForm{display:none;margin-top:12px}
+#applyForm.show{display:block}
+
+</style>
+</head>
+<body>
+<main class="page">
+  <h1>Login &amp; Signup Form</h1>
+  <section class="circle" aria-label="Login and signup form">
+
+    <div class="orbit-icons" aria-hidden="true">
+      <svg class="decor ball" viewBox="0 0 64 64">
+        <defs><radialGradient id="ball3d" cx="25%" cy="20%"><stop stop-color="#fff"/><stop offset=".45" stop-color="#e8eee9"/><stop offset="1" stop-color="#7e8a82"/></radialGradient></defs>
+        <circle cx="32" cy="32" r="28" fill="url(#ball3d)" stroke="#52615a" stroke-width="2"/>
+        <path d="M27 20 39 24 42 36 31 43 20 36 19 25Z" fill="#14563f" stroke="#0b3325" stroke-width="2"/>
+        <path d="m27 20-5-12M39 24l17-3M42 36l10 13M31 43l-5 14M20 36 6 43M19 25 5 20" fill="none" stroke="#0b3325" stroke-width="2.5"/>
+      </svg>
+      <svg class="decor person" viewBox="0 0 64 72">
+        <defs><linearGradient id="player3d" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff4b0"/><stop offset=".48" stop-color="#f0b900"/><stop offset="1" stop-color="#956900"/></linearGradient></defs>
+        <circle cx="32" cy="17" r="13" fill="url(#player3d)" stroke="#5d4600" stroke-width="2"/>
+        <path d="M8 68C9 44 18 34 32 34S55 44 56 68Z" fill="url(#player3d)" stroke="#5d4600" stroke-width="2.5"/>
+        <path d="M21 39 32 51 43 39" fill="none" stroke="#fff0a0" stroke-width="3"/>
+      </svg>
+      <svg class="decor yellow-card" viewBox="0 0 32 48">
+        <defs><linearGradient id="yc3d" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff7bd"/><stop offset=".5" stop-color="#ffd21c"/><stop offset="1" stop-color="#a87500"/></linearGradient></defs>
+        <rect x="3" y="3" width="26" height="42" rx="3" fill="url(#yc3d)" stroke="#956900" stroke-width="2"/>
+      </svg>
+      <svg class="decor red-card" viewBox="0 0 32 48">
+        <defs><linearGradient id="rc3d" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffc2b9"/><stop offset=".5" stop-color="#df382c"/><stop offset="1" stop-color="#7d1711"/></linearGradient></defs>
+        <rect x="3" y="3" width="26" height="42" rx="3" fill="url(#rc3d)" stroke="#7d1711" stroke-width="2"/>
+      </svg>
+    </div>
+
+    <form class="form" id="authForm">
+      <h2 id="heading">Sign Up</h2>
+      <p class="sub" id="subheading">Create your account</p>
+      <div class="fields" id="fields">
+        <label class="field" id="nameField">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm0 2c-4.42 0-8 2.24-8 5v1h16v-1c0-2.76-3.58-5-8-5z"/></svg>
+          <input id="name" name="name" placeholder="Full name" autocomplete="name">
+        </label>
+        <label class="field">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 4-8 5-8-5V6l8 5 8-5z"/></svg>
+          <input id="email" name="email" type="email" placeholder="Email" autocomplete="email" required>
+        </label>
+        <label class="field">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8h-1V6a5 5 0 0 0-10 0v2H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V10a2 2 0 0 0-2-2zM9 6a3 3 0 0 1 6 0v2H9zm3 11a2 2 0 1 1 0-4 2 2 0 0 1 0 4z"/></svg>
+          <input id="password" name="password" type="password" placeholder="Password" autocomplete="new-password" required minlength="6">
+        </label>
+      </div>
+      <button class="submit" type="submit" id="submitBtn">CREATE ACCOUNT</button>
+      <p class="switch" id="switchText">Already have an account? <button type="button" id="switchBtn">Login</button></p>
+      <p class="message" id="message" aria-live="polite"></p>
+    </form>
+  </section>
+</main>
+<section class="portal" id="clubPortal">
+  <div class="welcome-hero">
+    <h2>Welcome to Rising Star FCB</h2>
+    <p>If you are interested in playing for this club, please apply below.</p>
+    <button class="portal-btn" id="applyBtn">APPLY TO JOIN</button>
+    <form id="applyForm">
+      <label>Your full name</label><input id="applicantName" required placeholder="Full name">
+      <label>Your contact email</label><input id="applicantEmail" type="email" required placeholder="Email address">
+      <button class="portal-btn" type="submit">SUBMIT APPLICATION</button>
+    </form>
+    <p id="applyStatus" aria-live="polite"></p>
+  </div>
+  <div class="portal-grid">
+    <article class="portal-card">
+      <h3>Club Information</h3>
+      <p><b>Founded:</b> 2020</p>
+      <p><b>President:</b> Mahmood Emon</p>
+      <p><b>Club:</b> Rising Star FCB</p>
+    </article>
+    <article class="portal-card">
+      <h3>Our Captain</h3>
+      <img class="captain-photo" id="captainPhoto" alt="Club captain portrait">
+      <p style="text-align:center;font-weight:700" id="captainName">Captain not assigned yet</p>
+    </article>
+    <article class="portal-card">
+      <h3>Club Members</h3>
+      <ul class="member-list" id="memberList"><li>No members listed yet.</li></ul>
+    </article>
+    <article class="portal-card">
+      <h3>Admin Panel — Club Updates</h3>
+      <label>Captain name</label><input id="editCaptainName" placeholder="Captain's name">
+      <label>Captain photo</label><input id="editCaptainPhoto" type="file" accept="image/*">
+      <button class="portal-btn" id="saveCaptain">SAVE CAPTAIN</button>
+      <p style="font-size:12px;color:#777">This sample panel is visible in this browser only. Secure admin access requires Firebase.</p>
+    </article>
+  </div>
+</section>
+<script>
+const form=document.getElementById('authForm');
+const circle=document.querySelector('.circle');
+const heading=document.getElementById('heading');
+const subheading=document.getElementById('subheading');
+const nameField=document.getElementById('nameField');
+const nameInput=document.getElementById('name');
+const password=document.getElementById('password');
+const submitBtn=document.getElementById('submitBtn');
+const switchText=document.getElementById('switchText');
+const switchBtn=document.getElementById('switchBtn');
+const message=document.getElementById('message');
+let isSignup=true;
+switchBtn.addEventListener('click',()=>{
+  isSignup=!isSignup;
+  circle.classList.toggle('is-flipped');
+  heading.textContent=isSignup?'Sign Up':'Login';
+  subheading.textContent=isSignup?'Create your account':'Welcome back';
+  nameField.style.display=isSignup?'flex':'none';
+  nameInput.required=isSignup;
+  password.autocomplete=isSignup?'new-password':'current-password';
+  submitBtn.textContent=isSignup?'CREATE ACCOUNT':'LOGIN';
+  switchText.firstChild.textContent=isSignup?'Already have an account? ':'Don’t have an account? ';
+  switchBtn.textContent=isSignup?'Login':'Sign Up';
+  message.textContent='';
+});
+form.addEventListener('submit',(e)=>{
+  e.preventDefault();
+  message.style.color='#4b7650';
+  message.textContent=isSignup
+    ?'Form validated! Connect a backend to create an account.'
+    :'Form validated! Connect a backend to authenticate your login.';
+});
+
+// Welcome portal demo flow: this HTML-only sample does not authenticate against a real server.
+const authForm=document.getElementById('authForm');
+const authCircle=document.querySelector('.circle');
+const clubPortal=document.getElementById('clubPortal');
+authForm.addEventListener('submit',function(event){
+  event.preventDefault();
+  authCircle.style.display='none';
+  document.querySelector('.page h1').style.display='none';
+  clubPortal.classList.add('show');
+  window.scrollTo({top:0,behavior:'smooth'});
+});
+const applyBtn=document.getElementById('applyBtn');
+const applyForm=document.getElementById('applyForm');
+const members=[];
+applyBtn.addEventListener('click',()=>applyForm.classList.toggle('show'));
+applyForm.addEventListener('submit',event=>{
+  event.preventDefault();
+  const nm=document.getElementById('applicantName').value.trim();
+  const em=document.getElementById('applicantEmail').value.trim();
+  if(nm&&em){members.push({name:nm,email:em});renderMembers();document.getElementById('applyStatus').textContent='Application submitted in this demo.';applyForm.reset();}
+});
+function renderMembers(){
+ const ul=document.getElementById('memberList');
+ ul.innerHTML=members.length?members.map(m=>`<li>${safeText(m.name)} — ${safeText(m.email)}</li>`).join(''):'<li>No members listed yet.</li>';
+}
+function safeText(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+document.getElementById('saveCaptain').addEventListener('click',()=>{
+ const name=document.getElementById('editCaptainName').value.trim();
+ if(name)document.getElementById('captainName').textContent=name;
+ const file=document.getElementById('editCaptainPhoto').files[0];
+ if(file){const reader=new FileReader();reader.onload=()=>document.getElementById('captainPhoto').src=reader.result;reader.readAsDataURL(file);}
+});
+
+</script>
+</body>
+</html>
